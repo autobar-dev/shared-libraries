@@ -8,9 +8,13 @@ import (
 	"net/http"
 )
 
-func NewAuthRepository(service_url string) *AuthRepository {
+func NewAuthRepository(service_url string, microservice_name string) *AuthRepository {
+	client := &http.Client{}
+
 	return &AuthRepository{
-		service_url: service_url,
+		service_url:       service_url,
+		http_client:       client,
+		microservice_name: microservice_name,
 	}
 }
 
@@ -21,10 +25,17 @@ func (ar AuthRepository) LoginModule(serial_number string, private_key string, r
 		SerialNumber: serial_number,
 	}
 	body_json, _ := json.Marshal(body)
+	body_reader := bytes.NewReader(body_json)
 
-	response, err := http.Post(url, "application/json", bytes.NewReader(body_json))
+	req, err := http.NewRequest(http.MethodPost, url, body_reader)
 	if err != nil {
-		fmt.Println(err.Error())
+		return nil, err
+	}
+
+	req.Header.Add("X-Internal", ar.microservice_name)
+
+	response, err := ar.http_client.Do(req)
+	if err != nil {
 		return nil, err
 	}
 
@@ -47,10 +58,17 @@ func (ar AuthRepository) RegisterModule(serial_number string) (*ServiceModule, e
 		SerialNumber: serial_number,
 	}
 	body_json, _ := json.Marshal(body)
+	body_reader := bytes.NewReader(body_json)
 
-	response, err := http.Post(url, "application/json", bytes.NewReader(body_json))
+	req, err := http.NewRequest(http.MethodPost, url, body_reader)
 	if err != nil {
-		fmt.Println(err.Error())
+		return nil, err
+	}
+
+	req.Header.Add("X-Internal", ar.microservice_name)
+
+	response, err := ar.http_client.Do(req)
+	if err != nil {
 		return nil, err
 	}
 
@@ -69,7 +87,14 @@ func (ar AuthRepository) RegisterModule(serial_number string) (*ServiceModule, e
 func (ar AuthRepository) GetAllSessionsForClient(session string) (*[]ServiceSessionInfo, error) {
 	url := fmt.Sprintf("%s/session/all-for-client?session_id=%s", ar.service_url, session)
 
-	response, err := http.Get(url)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("X-Internal", ar.microservice_name)
+
+	response, err := ar.http_client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -93,10 +118,17 @@ func (ar AuthRepository) RemoveSession(session string) error {
 		SessionId: session,
 	}
 	body_json, _ := json.Marshal(body)
+	body_reader := bytes.NewReader(body_json)
 
-	response, err := http.Post(url, "application/json", bytes.NewReader(body_json))
+	req, err := http.NewRequest(http.MethodPost, url, body_reader)
 	if err != nil {
-		fmt.Println(err.Error())
+		return err
+	}
+
+	req.Header.Add("X-Internal", ar.microservice_name)
+
+	response, err := ar.http_client.Do(req)
+	if err != nil {
 		return err
 	}
 
@@ -119,10 +151,17 @@ func (ar AuthRepository) RemoveSessionByInternalId(internal_id int) error {
 		InternalId: internal_id,
 	}
 	body_json, _ := json.Marshal(body)
+	body_reader := bytes.NewReader(body_json)
 
-	response, err := http.Post(url, "application/json", bytes.NewReader(body_json))
+	req, err := http.NewRequest(http.MethodPost, url, body_reader)
 	if err != nil {
-		fmt.Println(err.Error())
+		return err
+	}
+
+	req.Header.Add("X-Internal", ar.microservice_name)
+
+	response, err := ar.http_client.Do(req)
+	if err != nil {
 		return err
 	}
 
@@ -141,7 +180,14 @@ func (ar AuthRepository) RemoveSessionByInternalId(internal_id int) error {
 func (ar AuthRepository) VerifySession(session string) (*ServiceSessionData, error) {
 	url := fmt.Sprintf("%s/session/verify?session_id=%s", ar.service_url, session)
 
-	response, err := http.Get(url)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("X-Internal", ar.microservice_name)
+
+	response, err := ar.http_client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -167,10 +213,17 @@ func (ar AuthRepository) LoginUser(email string, password string, remember_me *b
 		RememberMe: remember_me,
 	}
 	body_json, _ := json.Marshal(body)
+	body_reader := bytes.NewReader(body_json)
 
-	response, err := http.Post(url, "application/json", bytes.NewReader(body_json))
+	req, err := http.NewRequest(http.MethodPost, url, body_reader)
 	if err != nil {
-		fmt.Println(err.Error())
+		return nil, err
+	}
+
+	req.Header.Add("X-Internal", ar.microservice_name)
+
+	response, err := ar.http_client.Do(req)
+	if err != nil {
 		return nil, err
 	}
 
@@ -196,10 +249,17 @@ func (ar AuthRepository) RegisterUser(email string, password string, auto_login 
 		RememberMe: remember_me,
 	}
 	body_json, _ := json.Marshal(body)
+	body_reader := bytes.NewReader(body_json)
 
-	response, err := http.Post(url, "application/json", bytes.NewReader(body_json))
+	req, err := http.NewRequest(http.MethodPost, url, body_reader)
 	if err != nil {
-		fmt.Println(err.Error())
+		return nil, err
+	}
+
+	req.Header.Add("X-Internal", ar.microservice_name)
+
+	response, err := ar.http_client.Do(req)
+	if err != nil {
 		return nil, err
 	}
 

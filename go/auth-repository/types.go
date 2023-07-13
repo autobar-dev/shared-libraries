@@ -1,6 +1,9 @@
 package authrepository
 
-import "time"
+import (
+	"net/http"
+	"time"
+)
 
 type ServiceModule struct {
 	Id           int       `json:"id"`
@@ -32,5 +35,7 @@ type ServiceSessionInfo struct {
 }
 
 type AuthRepository struct {
-	service_url string
+	service_url       string
+	http_client       *http.Client
+	microservice_name string
 }
