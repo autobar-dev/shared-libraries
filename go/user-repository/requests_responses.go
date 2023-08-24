@@ -1,9 +1,11 @@
 package userrepository
 
 // Render email template
-type ServiceGetUserRequestBody struct{}
+type ServiceGetUserByIdRequestQuery struct {
+	Id string `url:"id"`
+}
 
-type ServiceGetUserResponse struct {
+type ServiceGetUserByIdResponse struct {
 	Status string  `json:"status"`
 	Error  *string `json:"error"`
 	Data   *User   `json:"data"`
