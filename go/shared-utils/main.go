@@ -3,8 +3,6 @@ package sharedutils
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
-	"fmt"
 	"net/http"
 )
 
@@ -13,18 +11,17 @@ func MakePostRequest(
 	sender_microservice_name string,
 	url string,
 	body interface{},
-	response *ServiceResponse,
-) error {
+) (*http.Response, error) {
 	body_json, err := json.Marshal(body)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	body_reader := bytes.NewReader(body_json)
 
 	req, err := http.NewRequest(http.MethodPost, url, body_reader)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	req.Header.Add("X-Internal", sender_microservice_name)
@@ -32,16 +29,8 @@ func MakePostRequest(
 
 	res, err := client.Do(req)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
-		return err
-	}
-
-	if response.Status == "error" {
-		return errors.New(fmt.Sprintf("error while parsing response: %s", *response.Error))
-	}
-
-	return err
+	return res, nil
 }
