@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	sharedutils "github.com/autobar-dev/shared-libraries/go/shared-utils"
+	"github.com/autobar-dev/shared-libraries/go/shared-utils"
 )
 
 func NewAuthRepository(service_url string, microservice_name string) *AuthRepository {
@@ -28,8 +28,13 @@ func (ar AuthRepository) LoginUser(email string, password string, remember_me bo
 		RememberMe: remember_me,
 	}
 
-	req, err := NewPostRequest(ar.microservice_name, url, body)
+	var sulr ServiceUserLoginResponse
+	res, err := sharedutils.NewPostRequest(ar.http_client, ar.microservice_name, url, body)
 	if err != nil {
+		return nil, err
+	}
+
+	if err := json.NewDecoder(res.Body).Decode(&sulr); err != nil {
 		return nil, err
 	}
 
@@ -50,9 +55,16 @@ func (ar AuthRepository) RegisterUser(user_id string, email string, password str
 	}
 
 	var surr ServiceUserRegisterResponse
-	err := sharedutils.
+	res, err := sharedutils.NewPostRequest(ar.http_client, ar.microservice_name, url, body)
+	if err := json.NewDecoder(res.Body).Decode(&surr); err != nil {
+		return err
+	}
 
-	return nil
+	if surr.Status == "error" {
+		return errors.New(fmt.Sprintf("error while parsing response: %s", *surr.Error))
+	}
+
+	return err
 }
 
 func (ar AuthRepository) LoginModule(serial_number string, private_key string) (*Tokens, error) {
@@ -63,18 +75,13 @@ func (ar AuthRepository) LoginModule(serial_number string, private_key string) (
 		PrivateKey:   private_key,
 	}
 
-	req, err := NewPostRequest(ar.microservice_name, url, body)
-	if err != nil {
-		return nil, err
-	}
-
-	response, err := ar.http_client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
 	var smlr ServiceModuleLoginResponse
-	if err := json.NewDecoder(response.Body).Decode(&smlr); err != nil {
+	res, err := sharedutils.NewPostRequest(ar.http_client, ar.microservice_name, url, body)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.NewDecoder(res.Body).Decode(&smlr); err != nil {
 		return nil, err
 	}
 
@@ -92,12 +99,7 @@ func (ar AuthRepository) RegisterModule(serial_number string) (private_key *stri
 		SerialNumber: serial_number,
 	}
 
-	req, err := NewPostRequest(ar.microservice_name, url, body)
-	if err != nil {
-		return nil, err
-	}
-
-	response, err := ar.http_client.Do(req)
+	response, err := sharedutils.NewPostRequest(ar.http_client, ar.microservice_name, url, body)
 	if err != nil {
 		return nil, err
 	}

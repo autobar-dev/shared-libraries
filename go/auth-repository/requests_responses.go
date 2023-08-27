@@ -8,7 +8,6 @@ type ServiceRefreshTokensRequestBody struct {
 type ServiceRefreshTokensResponse struct {
 	Status string  `json:"status"`
 	Error  *string `json:"error"`
-	Data   *Tokens `json:"data"`
 }
 
 // Login user
