@@ -18,7 +18,7 @@ func MakePostRequest(
 	sender_microservice_name string,
 	url string,
 	body interface{},
-	response ServiceResponseType,
+	response *ServiceResponseType,
 ) error {
 	body_json, err := json.Marshal(body)
 	if err != nil {
