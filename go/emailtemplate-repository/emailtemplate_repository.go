@@ -1,11 +1,12 @@
 package emailtemplaterepository
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
+
+	sharedutils "github.com/autobar-dev/shared-libraries/go/shared-utils"
 )
 
 func NewEmailTemplateRepository(service_url string, microservice_name string) *EmailTemplateRepository {
@@ -32,23 +33,14 @@ func (etr EmailTemplateRepository) RenderTemplate(
 		Locale:          locale,
 		Params:          params,
 	}
-	body_json, _ := json.Marshal(body)
-	body_reader := bytes.NewReader(body_json)
 
-	req, err := http.NewRequest(http.MethodPost, url, body_reader)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("X-Internal", etr.microservice_name)
-
-	response, err := etr.http_client.Do(req)
+	res, err := sharedutils.NewPostRequest(etr.http_client, etr.microservice_name, url, body)
 	if err != nil {
 		return nil, err
 	}
 
 	var srtr ServiceRenderTemplateResponse
-	if err := json.NewDecoder(response.Body).Decode(&srtr); err != nil {
+	if err := json.NewDecoder(res.Body).Decode(&srtr); err != nil {
 		return nil, err
 	}
 

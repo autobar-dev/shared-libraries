@@ -1,3 +1,5 @@
+github.com/autobar-dev/shared-libraries/go/shared-utils v0.0.0-20230827185717-1191d524c2bf h1:/Jv152NMztZapHkGNGQ0UpRC6xyULIz6ffcI4wPYaV4=
+github.com/autobar-dev/shared-libraries/go/shared-utils v0.0.0-20230827185717-1191d524c2bf/go.mod h1:a1rDCSufMAVKQNUTf9mJZFSo+Zb0SW/4U585rxrpi7k=
 github.com/google/go-cmp v0.5.2/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/go-querystring v1.1.0 h1:AnCroh3fv4ZBgVIf1Iwtovgjaw/GiKJo8M8yD/fhyJ8=
 github.com/google/go-querystring v1.1.0/go.mod h1:Kcdr2DB4koayq7X8pmAG4sNG59So17icRSOU623lUBU=
