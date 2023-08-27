@@ -18,193 +18,7 @@ func NewAuthRepository(service_url string, microservice_name string) *AuthReposi
 	}
 }
 
-func (ar AuthRepository) LoginModule(serial_number string, private_key string, remember_me *bool) (*string, error) {
-	url := fmt.Sprintf("%s/module/login", ar.service_url)
-
-	body := &ServiceModuleLoginRequestBody{
-		SerialNumber: serial_number,
-	}
-	body_json, _ := json.Marshal(body)
-	body_reader := bytes.NewReader(body_json)
-
-	req, err := http.NewRequest(http.MethodPost, url, body_reader)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("X-Internal", ar.microservice_name)
-
-	response, err := ar.http_client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	var smlr ServiceModuleLoginResponse
-	if err := json.NewDecoder(response.Body).Decode(&smlr); err != nil {
-		return nil, err
-	}
-
-	if smlr.Status == "error" {
-		return nil, errors.New(fmt.Sprintf("error while parsing module login response: %s", *smlr.Error))
-	}
-
-	return &smlr.Data.SessionId, nil
-}
-
-func (ar AuthRepository) RegisterModule(serial_number string) (*ServiceModule, error) {
-	url := fmt.Sprintf("%s/module/register", ar.service_url)
-
-	body := &ServiceModuleRegisterRequestBody{
-		SerialNumber: serial_number,
-	}
-	body_json, _ := json.Marshal(body)
-	body_reader := bytes.NewReader(body_json)
-
-	req, err := http.NewRequest(http.MethodPost, url, body_reader)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("X-Internal", ar.microservice_name)
-
-	response, err := ar.http_client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	var smrr ServiceModuleRegisterResponse
-	if err := json.NewDecoder(response.Body).Decode(&smrr); err != nil {
-		return nil, err
-	}
-
-	if smrr.Status == "error" {
-		return nil, errors.New(fmt.Sprintf("error while parsing module register response: %s", *smrr.Error))
-	}
-
-	return smrr.Data, nil
-}
-
-func (ar AuthRepository) GetAllSessionsForClient(session string) (*[]ServiceSessionInfo, error) {
-	url := fmt.Sprintf("%s/session/all-for-client?session_id=%s", ar.service_url, session)
-
-	req, err := http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("X-Internal", ar.microservice_name)
-
-	response, err := ar.http_client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	var sasfcr ServiceAllSessionsForClientResponse
-	if err := json.NewDecoder(response.Body).Decode(&sasfcr); err != nil {
-		return nil, err
-	}
-
-	if sasfcr.Status == "error" {
-		return nil, errors.New(fmt.Sprintf("error while parsing all sessions for client response: %s", *sasfcr.Error))
-	}
-
-	return sasfcr.Data, nil
-}
-
-func (ar AuthRepository) RemoveSession(session string) error {
-	url := fmt.Sprintf("%s/session/remove", ar.service_url)
-
-	body := &ServiceRemoveSessionRequestBody{
-		SessionId: session,
-	}
-	body_json, _ := json.Marshal(body)
-	body_reader := bytes.NewReader(body_json)
-
-	req, err := http.NewRequest(http.MethodPost, url, body_reader)
-	if err != nil {
-		return err
-	}
-
-	req.Header.Add("X-Internal", ar.microservice_name)
-
-	response, err := ar.http_client.Do(req)
-	if err != nil {
-		return err
-	}
-
-	var srsr ServiceRemoveSessionResponse
-	if err := json.NewDecoder(response.Body).Decode(&srsr); err != nil {
-		return err
-	}
-
-	if srsr.Status == "error" {
-		return errors.New(fmt.Sprintf("error while parsing module login response: %s", *srsr.Error))
-	}
-
-	return nil
-}
-
-func (ar AuthRepository) RemoveSessionByInternalId(internal_id int) error {
-	url := fmt.Sprintf("%s/session/remove-by-internal-id", ar.service_url)
-
-	body := &ServiceRemoveSessionByInternalIdRequestBody{
-		InternalId: internal_id,
-	}
-	body_json, _ := json.Marshal(body)
-	body_reader := bytes.NewReader(body_json)
-
-	req, err := http.NewRequest(http.MethodPost, url, body_reader)
-	if err != nil {
-		return err
-	}
-
-	req.Header.Add("X-Internal", ar.microservice_name)
-
-	response, err := ar.http_client.Do(req)
-	if err != nil {
-		return err
-	}
-
-	var srsbiir ServiceRemoveSessionByInternalIdResponse
-	if err := json.NewDecoder(response.Body).Decode(&srsbiir); err != nil {
-		return err
-	}
-
-	if srsbiir.Status == "error" {
-		return errors.New(fmt.Sprintf("error while parsing remove session by internal id response: %s", *srsbiir.Error))
-	}
-
-	return nil
-}
-
-func (ar AuthRepository) VerifySession(session string) (*ServiceSessionData, error) {
-	url := fmt.Sprintf("%s/session/verify?session_id=%s", ar.service_url, session)
-
-	req, err := http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("X-Internal", ar.microservice_name)
-
-	response, err := ar.http_client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	var svsr ServiceVerifySessionResponse
-	if err := json.NewDecoder(response.Body).Decode(&svsr); err != nil {
-		return nil, err
-	}
-
-	if svsr.Status == "error" {
-		return nil, errors.New(fmt.Sprintf("error while parsing session verify response: %s", *svsr.Error))
-	}
-
-	return svsr.Data, nil
-}
-
-func (ar AuthRepository) LoginUser(email string, password string, remember_me *bool) (*string, error) {
+func (ar AuthRepository) LoginUser(email string, password string, remember_me bool) (*Tokens, error) {
 	url := fmt.Sprintf("%s/user/login", ar.service_url)
 
 	body := &ServiceUserLoginRequestBody{
@@ -236,17 +50,50 @@ func (ar AuthRepository) LoginUser(email string, password string, remember_me *b
 		return nil, errors.New(fmt.Sprintf("error while parsing user login response: %s", *sulr.Error))
 	}
 
-	return &sulr.Data.SessionId, nil
+	return sulr.Data, nil
 }
 
-func (ar AuthRepository) RegisterUser(email string, password string, auto_login *bool, remember_me *bool) (*string, error) {
+func (ar AuthRepository) RegisterUser(user_id string, email string, password string) error {
 	url := fmt.Sprintf("%s/user/register", ar.service_url)
 
 	body := &ServiceUserRegisterRequestBody{
-		Email:      email,
-		Password:   password,
-		AutoLogin:  auto_login,
-		RememberMe: remember_me,
+		UserId:   user_id,
+		Email:    email,
+		Password: password,
+	}
+	body_json, _ := json.Marshal(body)
+	body_reader := bytes.NewReader(body_json)
+
+	req, err := http.NewRequest(http.MethodPost, url, body_reader)
+	if err != nil {
+		return err
+	}
+
+	req.Header.Add("X-Internal", ar.microservice_name)
+
+	response, err := ar.http_client.Do(req)
+	if err != nil {
+		return err
+	}
+
+	var surr ServiceUserRegisterResponse
+	if err := json.NewDecoder(response.Body).Decode(&surr); err != nil {
+		return err
+	}
+
+	if surr.Status == "error" {
+		return errors.New(fmt.Sprintf("error while parsing user register response: %s", *surr.Error))
+	}
+
+	return nil
+}
+
+func (ar AuthRepository) LoginModule(serial_number string, private_key string) (*Tokens, error) {
+	url := fmt.Sprintf("%s/module/login", ar.service_url)
+
+	body := &ServiceModuleLoginRequestBody{
+		SerialNumber: serial_number,
+		PrivateKey:   private_key,
 	}
 	body_json, _ := json.Marshal(body)
 	body_reader := bytes.NewReader(body_json)
@@ -263,14 +110,47 @@ func (ar AuthRepository) RegisterUser(email string, password string, auto_login 
 		return nil, err
 	}
 
-	var surr ServiceUserRegisterResponse
-	if err := json.NewDecoder(response.Body).Decode(&surr); err != nil {
+	var smlr ServiceModuleLoginResponse
+	if err := json.NewDecoder(response.Body).Decode(&smlr); err != nil {
 		return nil, err
 	}
 
-	if surr.Status == "error" {
-		return nil, errors.New(fmt.Sprintf("error while parsing user register response: %s", *surr.Error))
+	if smlr.Status == "error" {
+		return nil, errors.New(fmt.Sprintf("error while parsing module login response: %s", *smlr.Error))
 	}
 
-	return &surr.Data.SessionId, nil
+	return smlr.Data, nil
+}
+
+func (ar AuthRepository) RegisterModule(serial_number string) (private_key *string, err error) {
+	url := fmt.Sprintf("%s/module/register", ar.service_url)
+
+	body := &ServiceModuleRegisterRequestBody{
+		SerialNumber: serial_number,
+	}
+	body_json, _ := json.Marshal(body)
+	body_reader := bytes.NewReader(body_json)
+
+	req, err := http.NewRequest(http.MethodPost, url, body_reader)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("X-Internal", ar.microservice_name)
+
+	response, err := ar.http_client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var smrr ServiceModuleRegisterResponse
+	if err := json.NewDecoder(response.Body).Decode(&smrr); err != nil {
+		return nil, err
+	}
+
+	if smrr.Status == "error" {
+		return nil, errors.New(fmt.Sprintf("error while parsing module register response: %s", *smrr.Error))
+	}
+
+	return &smrr.Data.PrivateKey, nil
 }
