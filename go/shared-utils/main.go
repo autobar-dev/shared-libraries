@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func MakePostRequest(
+func NewPostRequest(
 	client *http.Client,
 	sender_microservice_name string,
 	url string,
