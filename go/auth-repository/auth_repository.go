@@ -1,7 +1,6 @@
 package authrepository
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -26,15 +25,11 @@ func (ar AuthRepository) LoginUser(email string, password string, remember_me bo
 		Password:   password,
 		RememberMe: remember_me,
 	}
-	body_json, _ := json.Marshal(body)
-	body_reader := bytes.NewReader(body_json)
 
-	req, err := http.NewRequest(http.MethodPost, url, body_reader)
+	req, err := NewPostRequest(ar.microservice_name, url, body)
 	if err != nil {
 		return nil, err
 	}
-
-	req.Header.Add("X-Internal", ar.microservice_name)
 
 	response, err := ar.http_client.Do(req)
 	if err != nil {
@@ -61,15 +56,11 @@ func (ar AuthRepository) RegisterUser(user_id string, email string, password str
 		Email:    email,
 		Password: password,
 	}
-	body_json, _ := json.Marshal(body)
-	body_reader := bytes.NewReader(body_json)
 
-	req, err := http.NewRequest(http.MethodPost, url, body_reader)
+	req, err := NewPostRequest(ar.microservice_name, url, body)
 	if err != nil {
 		return err
 	}
-
-	req.Header.Add("X-Internal", ar.microservice_name)
 
 	response, err := ar.http_client.Do(req)
 	if err != nil {
@@ -95,15 +86,11 @@ func (ar AuthRepository) LoginModule(serial_number string, private_key string) (
 		SerialNumber: serial_number,
 		PrivateKey:   private_key,
 	}
-	body_json, _ := json.Marshal(body)
-	body_reader := bytes.NewReader(body_json)
 
-	req, err := http.NewRequest(http.MethodPost, url, body_reader)
+	req, err := NewPostRequest(ar.microservice_name, url, body)
 	if err != nil {
 		return nil, err
 	}
-
-	req.Header.Add("X-Internal", ar.microservice_name)
 
 	response, err := ar.http_client.Do(req)
 	if err != nil {
@@ -128,15 +115,11 @@ func (ar AuthRepository) RegisterModule(serial_number string) (private_key *stri
 	body := &ServiceModuleRegisterRequestBody{
 		SerialNumber: serial_number,
 	}
-	body_json, _ := json.Marshal(body)
-	body_reader := bytes.NewReader(body_json)
 
-	req, err := http.NewRequest(http.MethodPost, url, body_reader)
+	req, err := NewPostRequest(ar.microservice_name, url, body)
 	if err != nil {
 		return nil, err
 	}
-
-	req.Header.Add("X-Internal", ar.microservice_name)
 
 	response, err := ar.http_client.Do(req)
 	if err != nil {
