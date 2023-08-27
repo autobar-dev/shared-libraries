@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+
+	sharedutils "github.com/autobar-dev/shared-libraries/go/shared-utils"
 )
 
 func NewAuthRepository(service_url string, microservice_name string) *AuthRepository {
@@ -31,16 +33,6 @@ func (ar AuthRepository) LoginUser(email string, password string, remember_me bo
 		return nil, err
 	}
 
-	response, err := ar.http_client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	var sulr ServiceUserLoginResponse
-	if err := json.NewDecoder(response.Body).Decode(&sulr); err != nil {
-		return nil, err
-	}
-
 	if sulr.Status == "error" {
 		return nil, errors.New(fmt.Sprintf("error while parsing user login response: %s", *sulr.Error))
 	}
@@ -57,24 +49,8 @@ func (ar AuthRepository) RegisterUser(user_id string, email string, password str
 		Password: password,
 	}
 
-	req, err := NewPostRequest(ar.microservice_name, url, body)
-	if err != nil {
-		return err
-	}
-
-	response, err := ar.http_client.Do(req)
-	if err != nil {
-		return err
-	}
-
 	var surr ServiceUserRegisterResponse
-	if err := json.NewDecoder(response.Body).Decode(&surr); err != nil {
-		return err
-	}
-
-	if surr.Status == "error" {
-		return errors.New(fmt.Sprintf("error while parsing user register response: %s", *surr.Error))
-	}
+	err := sharedutils.
 
 	return nil
 }

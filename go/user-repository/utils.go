@@ -1,4 +1,4 @@
-package sharedutils
+package userrepository
 
 import (
 	"bytes"
