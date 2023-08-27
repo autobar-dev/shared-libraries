@@ -8,17 +8,12 @@ import (
 	"net/http"
 )
 
-type ServiceResponseType struct {
-	Status string  `json:"status"`
-	Error  *string `json:"error"`
-}
-
 func MakePostRequest(
 	client *http.Client,
 	sender_microservice_name string,
 	url string,
 	body interface{},
-	response *ServiceResponseType,
+	response *ServiceResponse,
 ) error {
 	body_json, err := json.Marshal(body)
 	if err != nil {
