@@ -10,5 +10,7 @@ github.com/autobar-dev/shared-libraries/go/shared-utils v0.0.0-20230827183537-9e
 github.com/autobar-dev/shared-libraries/go/shared-utils v0.0.0-20230827183537-9eabc94a0509/go.mod h1:a1rDCSufMAVKQNUTf9mJZFSo+Zb0SW/4U585rxrpi7k=
 github.com/autobar-dev/shared-libraries/go/shared-utils v0.0.0-20230827183726-f8e8ed5b8399 h1:aFH+hN8g+niUOKhrb3vJosOUOxwzP3MQE6RAsx587ZY=
 github.com/autobar-dev/shared-libraries/go/shared-utils v0.0.0-20230827183726-f8e8ed5b8399/go.mod h1:a1rDCSufMAVKQNUTf9mJZFSo+Zb0SW/4U585rxrpi7k=
+github.com/autobar-dev/shared-libraries/go/shared-utils v0.0.0-20230827185620-154f10f11b78 h1:1io344p+SFZdQASy6DV0OXHkS4VibIFRq+lCZCEqjMg=
+github.com/autobar-dev/shared-libraries/go/shared-utils v0.0.0-20230827185620-154f10f11b78/go.mod h1:a1rDCSufMAVKQNUTf9mJZFSo+Zb0SW/4U585rxrpi7k=
 github.com/golang-jwt/jwt/v4 v4.5.0 h1:7cYmW1XlMY7h7ii7UhUyChSgS5wUJEnm9uZVTGqOWzg=
 github.com/golang-jwt/jwt/v4 v4.5.0/go.mod h1:m21LjoU+eqJr34lmDMbreY2eSTRJ1cv77w39/MY0Ch0=
