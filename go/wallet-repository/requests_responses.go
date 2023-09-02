@@ -11,3 +11,10 @@ type ServiceCreateWalletResponse struct {
 	Error  *string `json:"error"`
 	Data   *Wallet `json:"data"`
 }
+
+// Get wallet
+type ServiceGetWalletResponse struct {
+	Status string  `json:"status"`
+	Error  *string `json:"error"`
+	Data   *Wallet `json:"data"`
+}

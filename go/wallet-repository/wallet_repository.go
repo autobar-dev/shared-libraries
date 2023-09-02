@@ -19,7 +19,7 @@ func NewWalletRepository(service_url string, microservice_name string) *WalletRe
 	}
 }
 
-func (wr WalletRepository) Create(
+func (wr WalletRepository) CreateWallet(
 	user_id string,
 	currency_code string,
 ) (*Wallet, error) {
@@ -45,4 +45,24 @@ func (wr WalletRepository) Create(
 	}
 
 	return scwr.Data, nil
+}
+
+func (wr WalletRepository) GetWallet(user_id string) (*Wallet, error) {
+	url := fmt.Sprintf("%s/wallet/?user_id=%s", wr.service_url, user_id)
+
+	res, err := sharedutils.NewGetRequest(wr.http_client, wr.microservice_name, url)
+	if err != nil {
+		return nil, err
+	}
+
+	var sgwr ServiceGetWalletResponse
+	if err := json.NewDecoder(res.Body).Decode(&sgwr); err != nil {
+		return nil, err
+	}
+
+	if sgwr.Status == "error" {
+		return nil, errors.New(fmt.Sprintf("error while parsing get wallet response: %s", *sgwr.Error))
+	}
+
+	return sgwr.Data, nil
 }
