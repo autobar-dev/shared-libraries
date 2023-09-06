@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	sharedutils "github.com/autobar-dev/shared-libraries/go/shared-utils"
 	"github.com/google/go-querystring/query"
 )
 
@@ -27,20 +28,13 @@ func (ur *UserRepository) GetUserById(id string) (*User, error) {
 
 	url := fmt.Sprintf("%s/get-by-id?%s", ur.service_url, query_string)
 
-	req, err := http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("X-Internal", ur.microservice_name)
-
-	response, err := ur.http_client.Do(req)
+	res, err := sharedutils.NewGetRequest(ur.http_client, ur.microservice_name, url)
 	if err != nil {
 		return nil, err
 	}
 
 	var sgubir ServiceGetUserByIdResponse
-	if err := json.NewDecoder(response.Body).Decode(&sgubir); err != nil {
+	if err := json.NewDecoder(res.Body).Decode(&sgubir); err != nil {
 		return nil, err
 	}
 
