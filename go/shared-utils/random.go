@@ -8,6 +8,7 @@ var (
 	NumberCharacterSet                   = []rune("0123456789")
 	LowercaseUppercaseCharacterSet       = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 	LowercaseUppercaseNumberCharacterSet = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+	UppercaseNumberCharacterSet          = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 )
 
 func GenerateRandomString(length int, character_set []rune) string {
