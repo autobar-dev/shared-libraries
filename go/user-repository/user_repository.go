@@ -26,7 +26,7 @@ func (ur *UserRepository) GetUserById(id string) (*User, error) {
 	})
 	query_string := query_values.Encode()
 
-	url := fmt.Sprintf("%s/get-by-id?%s", ur.service_url, query_string)
+	url := fmt.Sprintf("%s/?%s", ur.service_url, query_string)
 
 	res, err := sharedutils.NewGetRequest(ur.http_client, ur.microservice_name, url)
 	if err != nil {
