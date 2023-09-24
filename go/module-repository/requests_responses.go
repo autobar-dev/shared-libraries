@@ -1,1 +1,1 @@
-package productrepository
+package modulerepository

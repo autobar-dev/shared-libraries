@@ -1,4 +1,4 @@
-package productrepository
+package modulerepository
 
 import (
 	"net/http"
