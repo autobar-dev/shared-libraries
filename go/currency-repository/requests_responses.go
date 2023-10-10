@@ -6,3 +6,10 @@ type ServiceGetCurrencyResponse struct {
 	Error  *string   `json:"error"`
 	Data   *Currency `json:"data"`
 }
+
+// Get rate
+type ServiceGetRateResponse struct {
+	Status string  `json:"status"`
+	Error  *string `json:"error"`
+	Data   *Rate   `json:"data"`
+}

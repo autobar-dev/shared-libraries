@@ -19,7 +19,7 @@ func NewCurrencyRepository(service_url string, microservice_name string) *Curren
 	}
 }
 
-func (cr CurrencyRepository) GetCurrencyByCode(
+func (cr *CurrencyRepository) GetCurrencyByCode(
 	code string,
 ) (*Currency, error) {
 	url := fmt.Sprintf("%s/currency/?code=%s", cr.service_url, code)
@@ -35,8 +35,31 @@ func (cr CurrencyRepository) GetCurrencyByCode(
 	}
 
 	if sgcr.Status == "error" {
-		return nil, errors.New(fmt.Sprintf("error while parsing get currency response: %s", *sgcr.Error))
+		return nil, errors.New(fmt.Sprintf("error while getting currency response: %s", *sgcr.Error))
 	}
 
 	return sgcr.Data, nil
+}
+
+func (cr *CurrencyRepository) GetRate(
+	from_code string,
+	to_code string,
+) (*Rate, error) {
+	url := fmt.Sprintf("%s/rate/?from=%s&to=%s", cr.service_url, from_code, to_code)
+
+	res, err := sharedutils.NewGetRequest(cr.http_client, cr.microservice_name, url)
+	if err != nil {
+		return nil, err
+	}
+
+	var sgrr ServiceGetRateResponse
+	if err := json.NewDecoder(res.Body).Decode(&sgrr); err != nil {
+		return nil, err
+	}
+
+	if sgrr.Status == "error" {
+		return nil, errors.New(fmt.Sprintf("error while getting rate response: %s", *sgrr.Error))
+	}
+
+	return sgrr.Data, nil
 }
