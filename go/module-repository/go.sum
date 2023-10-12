@@ -1,0 +1,4 @@
+github.com/autobar-dev/shared-libraries/go/currency-repository v0.0.0-20231011223349-0be7621abfb6 h1:QvfrN2TKGtpIkkplvrUVRO8GojXvhxI7mZszm/PTU3s=
+github.com/autobar-dev/shared-libraries/go/currency-repository v0.0.0-20231011223349-0be7621abfb6/go.mod h1:+asvxArO5OB2KCwN6bfwtBTd3lJsPaTd6rzwO1bbrfk=
+github.com/autobar-dev/shared-libraries/go/shared-utils v0.0.0-20230902162634-ab46a6d7a88a h1:BhBctmREgmK5kOlbPnP1QM6Y+KBBcJnn4NFdHmr66jU=
+github.com/autobar-dev/shared-libraries/go/shared-utils v0.0.0-20230902162634-ab46a6d7a88a/go.mod h1:a1rDCSufMAVKQNUTf9mJZFSo+Zb0SW/4U585rxrpi7k=
