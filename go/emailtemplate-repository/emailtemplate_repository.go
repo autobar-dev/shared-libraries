@@ -2,7 +2,6 @@ package emailtemplaterepository
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 
@@ -19,7 +18,7 @@ func NewEmailTemplateRepository(service_url string, microservice_name string) *E
 	}
 }
 
-func (etr EmailTemplateRepository) RenderTemplate(
+func (etr *EmailTemplateRepository) RenderTemplate(
 	name string,
 	version *string,
 	locale string,
@@ -45,7 +44,7 @@ func (etr EmailTemplateRepository) RenderTemplate(
 	}
 
 	if srtr.Status == "error" {
-		return nil, errors.New(fmt.Sprintf("error while parsing render template response: %s", *srtr.Error))
+		return nil, fmt.Errorf("error while parsing render template response: %s", *srtr.Error)
 	}
 
 	return srtr.Data, nil

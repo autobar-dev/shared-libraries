@@ -2,7 +2,6 @@ package userrepository
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 
@@ -39,7 +38,7 @@ func (ur *UserRepository) GetUserById(id string) (*User, error) {
 	}
 
 	if sgubir.Status == "error" {
-		return nil, errors.New(fmt.Sprintf("error while parsing get user by id response: %s", *sgubir.Error))
+		return nil, fmt.Errorf("error while parsing get user by id response: %s", *sgubir.Error)
 	}
 
 	return sgubir.Data, nil

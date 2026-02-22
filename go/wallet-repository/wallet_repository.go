@@ -2,7 +2,6 @@ package walletrepository
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 
@@ -19,7 +18,7 @@ func NewWalletRepository(service_url string, microservice_name string) *WalletRe
 	}
 }
 
-func (wr WalletRepository) CreateWallet(
+func (wr *WalletRepository) CreateWallet(
 	user_id string,
 	currency_code string,
 ) (*Wallet, error) {
@@ -41,13 +40,13 @@ func (wr WalletRepository) CreateWallet(
 	}
 
 	if scwr.Status == "error" {
-		return nil, errors.New(fmt.Sprintf("error while parsing create wallet response: %s", *scwr.Error))
+		return nil, fmt.Errorf("error while parsing create wallet response: %s", *scwr.Error)
 	}
 
 	return scwr.Data, nil
 }
 
-func (wr WalletRepository) GetWallet(user_id string) (*Wallet, error) {
+func (wr *WalletRepository) GetWallet(user_id string) (*Wallet, error) {
 	url := fmt.Sprintf("%s/wallet/?user_id=%s", wr.service_url, user_id)
 
 	res, err := sharedutils.NewGetRequest(wr.http_client, wr.microservice_name, url)
@@ -61,13 +60,13 @@ func (wr WalletRepository) GetWallet(user_id string) (*Wallet, error) {
 	}
 
 	if sgwr.Status == "error" {
-		return nil, errors.New(fmt.Sprintf("error while parsing get wallet response: %s", *sgwr.Error))
+		return nil, fmt.Errorf("error while parsing get wallet response: %s", *sgwr.Error)
 	}
 
 	return sgwr.Data, nil
 }
 
-func (wr WalletRepository) CreateTransactionDeposit(
+func (wr *WalletRepository) CreateTransactionDeposit(
 	user_id string,
 	value int64,
 ) (*Transaction, error) {
@@ -89,13 +88,13 @@ func (wr WalletRepository) CreateTransactionDeposit(
 	}
 
 	if sctr.Status == "error" {
-		return nil, errors.New(fmt.Sprintf("error while parsing create transaction deposit response: %s", *sctr.Error))
+		return nil, fmt.Errorf("error while parsing create transaction deposit response: %s", *sctr.Error)
 	}
 
 	return sctr.Data, nil
 }
 
-func (wr WalletRepository) CreateTransactionWithdraw(
+func (wr *WalletRepository) CreateTransactionWithdraw(
 	user_id string,
 	value int64,
 ) (*Transaction, error) {
@@ -117,13 +116,13 @@ func (wr WalletRepository) CreateTransactionWithdraw(
 	}
 
 	if sctr.Status == "error" {
-		return nil, errors.New(fmt.Sprintf("error while parsing create transaction withdraw response: %s", *sctr.Error))
+		return nil, fmt.Errorf("error while parsing create transaction withdraw response: %s", *sctr.Error)
 	}
 
 	return sctr.Data, nil
 }
 
-func (wr WalletRepository) CreateTransactionPurchase(
+func (wr *WalletRepository) CreateTransactionPurchase(
 	user_id string,
 	value int64,
 ) (*Transaction, error) {
@@ -145,13 +144,13 @@ func (wr WalletRepository) CreateTransactionPurchase(
 	}
 
 	if sctr.Status == "error" {
-		return nil, errors.New(fmt.Sprintf("error while parsing create transaction purchase response: %s", *sctr.Error))
+		return nil, fmt.Errorf("error while parsing create transaction purchase response: %s", *sctr.Error)
 	}
 
 	return sctr.Data, nil
 }
 
-func (wr WalletRepository) CreateTransactionRefund(
+func (wr *WalletRepository) CreateTransactionRefund(
 	user_id string,
 	value int64,
 ) (*Transaction, error) {
@@ -173,13 +172,13 @@ func (wr WalletRepository) CreateTransactionRefund(
 	}
 
 	if sctr.Status == "error" {
-		return nil, errors.New(fmt.Sprintf("error while parsing create transaction refund response: %s", *sctr.Error))
+		return nil, fmt.Errorf("error while parsing create transaction refund response: %s", *sctr.Error)
 	}
 
 	return sctr.Data, nil
 }
 
-func (wr WalletRepository) CreateTransactionCurrencyChange(
+func (wr *WalletRepository) CreateTransactionCurrencyChange(
 	user_id string,
 	value int64,
 ) (*Transaction, error) {
@@ -201,7 +200,7 @@ func (wr WalletRepository) CreateTransactionCurrencyChange(
 	}
 
 	if sctr.Status == "error" {
-		return nil, errors.New(fmt.Sprintf("error while parsing create transaction currency change response: %s", *sctr.Error))
+		return nil, fmt.Errorf("error while parsing create transaction currency change response: %s", *sctr.Error)
 	}
 
 	return sctr.Data, nil

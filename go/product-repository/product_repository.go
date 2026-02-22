@@ -2,7 +2,6 @@ package productrepository
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 
@@ -19,7 +18,7 @@ func NewProductRepository(service_url string, microservice_name string) *Product
 	}
 }
 
-func (pr ProductRepository) GetProductById(
+func (pr *ProductRepository) GetProductById(
 	id string,
 ) (*Product, error) {
 	url := fmt.Sprintf("%s/?id=%s", pr.service_url, id)
@@ -35,7 +34,7 @@ func (pr ProductRepository) GetProductById(
 	}
 
 	if sgpr.Status == "error" {
-		return nil, errors.New(fmt.Sprintf("error while parsing get product response: %s", *sgpr.Error))
+		return nil, fmt.Errorf("error while parsing get product response: %s", *sgpr.Error)
 	}
 
 	return sgpr.Data.Product, nil

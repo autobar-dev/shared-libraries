@@ -25,9 +25,14 @@ type ServiceUserLoginResponse struct {
 
 // Register user
 type ServiceUserRegisterRequestBody struct {
-	UserId   string `json:"user_id"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	UserId      string `json:"user_id"`
+	Email       string `json:"email"`
+	Password    string `json:"password"`
+	FirstName   string `json:"first_name"`
+	LastName    string `json:"last_name"`
+	DateOfBirth string `json:"date_of_birth"`
+	Locale      string `json:"locale"`
+	Role        string `json:"role"`
 }
 
 type ServiceUserRegisterResponse struct {

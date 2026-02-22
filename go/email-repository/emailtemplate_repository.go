@@ -2,7 +2,6 @@ package emailrepository
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 
@@ -19,7 +18,7 @@ func NewEmailRepository(service_url string, microservice_name string) *EmailRepo
 	}
 }
 
-func (er EmailRepository) Send(
+func (er *EmailRepository) Send(
 	from string,
 	to string,
 	subject string,
@@ -49,7 +48,7 @@ func (er EmailRepository) Send(
 	}
 
 	if ssr.Status == "error" {
-		return errors.New(fmt.Sprintf("error while parsing send response: %s", *ssr.Error))
+		return fmt.Errorf("error while parsing send response: %s", *ssr.Error)
 	}
 
 	return nil

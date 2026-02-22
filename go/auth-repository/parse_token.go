@@ -10,7 +10,7 @@ import (
 func ParseAccessToken(jwt_secret string, access_token string) (*AccessTokenPayload, error) {
 	token, err := jwt.Parse(access_token, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, errors.New(fmt.Sprintf("unexpected signing method: %v", token.Header["alg"]))
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 
 		return []byte(jwt_secret), nil

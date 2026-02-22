@@ -2,11 +2,10 @@ package authrepository
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 
-	"github.com/autobar-dev/shared-libraries/go/shared-utils"
+	sharedutils "github.com/autobar-dev/shared-libraries/go/shared-utils"
 )
 
 func NewAuthRepository(service_url string, microservice_name string) *AuthRepository {
@@ -19,7 +18,7 @@ func NewAuthRepository(service_url string, microservice_name string) *AuthReposi
 	}
 }
 
-func (ar AuthRepository) LoginUser(email string, password string, remember_me bool) (*Tokens, error) {
+func (ar *AuthRepository) LoginUser(email string, password string, remember_me bool) (*Tokens, error) {
 	url := fmt.Sprintf("%s/user/login", ar.service_url)
 
 	body := &ServiceUserLoginRequestBody{
@@ -39,35 +38,33 @@ func (ar AuthRepository) LoginUser(email string, password string, remember_me bo
 	}
 
 	if sulr.Status == "error" {
-		return nil, errors.New(fmt.Sprintf("error while parsing user login response: %s", *sulr.Error))
+		return nil, fmt.Errorf("error while parsing user login response: %s", *sulr.Error)
 	}
 
 	return sulr.Data, nil
 }
 
-func (ar AuthRepository) RegisterUser(user_id string, email string, password string) error {
+func (ar *AuthRepository) RegisterUser(surrb *ServiceUserRegisterRequestBody) error {
 	url := fmt.Sprintf("%s/user/register", ar.service_url)
 
-	body := &ServiceUserRegisterRequestBody{
-		UserId:   user_id,
-		Email:    email,
-		Password: password,
+	var surr ServiceUserRegisterResponse
+	res, err := sharedutils.NewPostRequest(ar.http_client, ar.microservice_name, url, surrb)
+	if err != nil {
+		return err
 	}
 
-	var surr ServiceUserRegisterResponse
-	res, err := sharedutils.NewPostRequest(ar.http_client, ar.microservice_name, url, body)
 	if err := json.NewDecoder(res.Body).Decode(&surr); err != nil {
 		return err
 	}
 
 	if surr.Status == "error" {
-		return errors.New(fmt.Sprintf("error while parsing response: %s", *surr.Error))
+		return fmt.Errorf("error while parsing response: %s", *surr.Error)
 	}
 
-	return err
+	return nil
 }
 
-func (ar AuthRepository) LoginModule(serial_number string, private_key string) (*Tokens, error) {
+func (ar *AuthRepository) LoginModule(serial_number string, private_key string) (*Tokens, error) {
 	url := fmt.Sprintf("%s/module/login", ar.service_url)
 
 	body := &ServiceModuleLoginRequestBody{
@@ -86,13 +83,13 @@ func (ar AuthRepository) LoginModule(serial_number string, private_key string) (
 	}
 
 	if smlr.Status == "error" {
-		return nil, errors.New(fmt.Sprintf("error while parsing module login response: %s", *smlr.Error))
+		return nil, fmt.Errorf("error while parsing module login response: %s", *smlr.Error)
 	}
 
 	return smlr.Data, nil
 }
 
-func (ar AuthRepository) RegisterModule(serial_number string) (private_key *string, err error) {
+func (ar *AuthRepository) RegisterModule(serial_number string) (private_key *string, err error) {
 	url := fmt.Sprintf("%s/module/register", ar.service_url)
 
 	body := &ServiceModuleRegisterRequestBody{
@@ -110,7 +107,7 @@ func (ar AuthRepository) RegisterModule(serial_number string) (private_key *stri
 	}
 
 	if smrr.Status == "error" {
-		return nil, errors.New(fmt.Sprintf("error while parsing module register response: %s", *smrr.Error))
+		return nil, fmt.Errorf("error while parsing module register response: %s", *smrr.Error)
 	}
 
 	return &smrr.Data.PrivateKey, nil

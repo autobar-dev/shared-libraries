@@ -2,7 +2,6 @@ package filerepository
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 
@@ -35,7 +34,7 @@ func (fr *FileRepository) GetFile(
 	}
 
 	if sgfr.Status == "error" {
-		return nil, errors.New(fmt.Sprintf("error while parsing get file response: %s", *sgfr.Error))
+		return nil, fmt.Errorf("error while parsing get file response: %s", *sgfr.Error)
 	}
 
 	return sgfr.Data, nil
@@ -60,7 +59,7 @@ func (fr *FileRepository) DeleteFile(
 	}
 
 	if sdfr.Status == "error" {
-		return errors.New(fmt.Sprintf("error while parsing delete file response: %s", *sdfr.Error))
+		return fmt.Errorf("error while parsing delete file response: %s", *sdfr.Error)
 	}
 
 	return nil

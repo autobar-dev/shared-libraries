@@ -2,7 +2,6 @@ package currencyrepository
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 
@@ -35,7 +34,7 @@ func (cr *CurrencyRepository) GetCurrencyByCode(
 	}
 
 	if sgcr.Status == "error" {
-		return nil, errors.New(fmt.Sprintf("error while getting currency response: %s", *sgcr.Error))
+		return nil, fmt.Errorf("error while getting currency response: %s", *sgcr.Error)
 	}
 
 	return sgcr.Data, nil
@@ -58,7 +57,7 @@ func (cr *CurrencyRepository) GetRate(
 	}
 
 	if sgrr.Status == "error" {
-		return nil, errors.New(fmt.Sprintf("error while getting rate response: %s", *sgrr.Error))
+		return nil, fmt.Errorf("error while getting rate response: %s", *sgrr.Error)
 	}
 
 	return sgrr.Data, nil
