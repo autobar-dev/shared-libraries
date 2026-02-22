@@ -43,3 +43,53 @@ func (ur *UserRepository) GetUserById(id string) (*User, error) {
 
 	return sgubir.Data, nil
 }
+
+func (ur *UserRepository) GetLocale(code string) (*Locale, error) {
+	query_values, _ := query.Values(&ServiceGetLocaleRequestQuery{
+		Code: code,
+	})
+	query_string := query_values.Encode()
+
+	url := fmt.Sprintf("%s/locale?%s", ur.service_url, query_string)
+
+	res, err := sharedutils.NewGetRequest(ur.http_client, ur.microservice_name, url)
+	if err != nil {
+		return nil, err
+	}
+
+	var sglr ServiceGetLocaleResponse
+	if err := json.NewDecoder(res.Body).Decode(&sglr); err != nil {
+		return nil, err
+	}
+
+	if sglr.Status == "error" {
+		return nil, fmt.Errorf("error while parsing get locale response: %s", *sglr.Error)
+	}
+
+	return sglr.Data, nil
+}
+
+func (ur *UserRepository) GetRole(name string) (*Role, error) {
+	query_values, _ := query.Values(&ServiceGetRoleRequestQuery{
+		Name: name,
+	})
+	query_string := query_values.Encode()
+
+	url := fmt.Sprintf("%s/role?%s", ur.service_url, query_string)
+
+	res, err := sharedutils.NewGetRequest(ur.http_client, ur.microservice_name, url)
+	if err != nil {
+		return nil, err
+	}
+
+	var sgr ServiceGetRoleResponse
+	if err := json.NewDecoder(res.Body).Decode(&sgr); err != nil {
+		return nil, err
+	}
+
+	if sgr.Status == "error" {
+		return nil, fmt.Errorf("error while parsing get role response: %s", *sgr.Error)
+	}
+
+	return sgr.Data, nil
+}

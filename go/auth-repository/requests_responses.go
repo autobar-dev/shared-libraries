@@ -31,8 +31,8 @@ type ServiceUserRegisterRequestBody struct {
 	FirstName   string `json:"first_name"`
 	LastName    string `json:"last_name"`
 	DateOfBirth string `json:"date_of_birth"`
-	Locale      string `json:"locale"`
-	Role        string `json:"role"`
+	LocaleId    int    `json:"locale_id"`
+	RoleId      int    `json:"role_id"`
 }
 
 type ServiceUserRegisterResponse struct {

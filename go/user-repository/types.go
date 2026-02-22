@@ -23,3 +23,17 @@ type User struct {
 	CreatedAt                  time.Time `json:"created_at"`
 	UpdatedAt                  time.Time `json:"updated_at"`
 }
+
+type Locale struct {
+	Id            int       `json:"id"`
+	Code          string    `json:"code"`
+	Name          string    `json:"name"`
+	NameLocalized string    `json:"name_localized"`
+	CreatedAt     time.Time `json:"created_at"`
+}
+
+type Role struct {
+	Id        int       `json:"id"`
+	Name      string    `json:"name"`
+	CreatedAt time.Time `json:"created_at"`
+}
