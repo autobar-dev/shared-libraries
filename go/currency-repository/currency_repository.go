@@ -18,6 +18,26 @@ func NewCurrencyRepository(service_url string, microservice_name string) *Curren
 	}
 }
 
+func (cr *CurrencyRepository) GetCurrency(id int) (*Currency, error) {
+	url := fmt.Sprintf("%s/currency/?id=%d", cr.service_url, id)
+
+	res, err := sharedutils.NewGetRequest(cr.http_client, cr.microservice_name, url)
+	if err != nil {
+		return nil, err
+	}
+
+	var sgcr ServiceGetCurrencyResponse
+	if err := json.NewDecoder(res.Body).Decode(&sgcr); err != nil {
+		return nil, err
+	}
+
+	if sgcr.Status == "error" {
+		return nil, fmt.Errorf("error while getting currency response: %s", *sgcr.Error)
+	}
+
+	return sgcr.Data, nil
+}
+
 func (cr *CurrencyRepository) GetCurrencyByCode(
 	code string,
 ) (*Currency, error) {

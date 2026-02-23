@@ -2,6 +2,7 @@ package walletrepository
 
 import (
 	"net/http"
+	"time"
 )
 
 type WalletRepository struct {
@@ -28,10 +29,10 @@ const (
 )
 
 type Transaction struct {
-	Id              string          `json:"id"`
+	Id              int             `json:"id"`
 	WalletId        int             `json:"wallet_id"`
 	TransactionType TransactionType `json:"transaction_type"`
 	Value           int             `json:"value"`
 	CurrencyCode    string          `json:"currency_code"`
-	CreatedAt       string          `json:"created_at"`
+	CreatedAt       time.Time       `json:"created_at"`
 }
