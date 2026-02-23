@@ -71,7 +71,32 @@ func (ur *UserRepository) GetLocale(code string) (*Locale, error) {
 
 func (ur *UserRepository) GetRole(name string) (*Role, error) {
 	query_values, _ := query.Values(&ServiceGetRoleRequestQuery{
-		Name: name,
+		Name: &name,
+	})
+	query_string := query_values.Encode()
+
+	url := fmt.Sprintf("%s/role?%s", ur.service_url, query_string)
+
+	res, err := sharedutils.NewGetRequest(ur.http_client, ur.microservice_name, url)
+	if err != nil {
+		return nil, err
+	}
+
+	var sgr ServiceGetRoleResponse
+	if err := json.NewDecoder(res.Body).Decode(&sgr); err != nil {
+		return nil, err
+	}
+
+	if sgr.Status == "error" {
+		return nil, fmt.Errorf("error while parsing get role response: %s", *sgr.Error)
+	}
+
+	return sgr.Data, nil
+}
+
+func (ur *UserRepository) GetRoleById(id int) (*Role, error) {
+	query_values, _ := query.Values(&ServiceGetRoleRequestQuery{
+		Id: &id,
 	})
 	query_string := query_values.Encode()
 

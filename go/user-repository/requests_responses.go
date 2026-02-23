@@ -24,7 +24,8 @@ type ServiceGetLocaleResponse struct {
 
 // Role
 type ServiceGetRoleRequestQuery struct {
-	Name string `url:"name"`
+	Name *string `url:"name"`
+	Id   *int    `url:"id"`
 }
 
 type ServiceGetRoleResponse struct {
