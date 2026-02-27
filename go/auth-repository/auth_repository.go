@@ -64,13 +64,32 @@ func (ar *AuthRepository) RegisterUser(surrb *ServiceUserRegisterRequestBody) er
 	return nil
 }
 
-func (ar *AuthRepository) LoginModule(serial_number string, private_key string) (*Tokens, error) {
-	url := fmt.Sprintf("%s/module/login", ar.service_url)
+func (ar *AuthRepository) LoginModuleChallenge(serial_number string) (*ServiceModuleLoginChallengeResponseData, error) {
+	url := fmt.Sprintf("%s/module/login/challenge", ar.service_url)
 
-	body := &ServiceModuleLoginRequestBody{
+	body := &ServiceModuleLoginChallengeRequestBody{
 		SerialNumber: serial_number,
-		PrivateKey:   private_key,
 	}
+
+	var smlcr ServiceModuleLoginChallengeResponse
+	res, err := sharedutils.NewPostRequest(ar.http_client, ar.microservice_name, url, body)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.NewDecoder(res.Body).Decode(&smlcr); err != nil {
+		return nil, err
+	}
+
+	if smlcr.Status == "error" {
+		return nil, fmt.Errorf("error while parsing module login challenge response: %s", *smlcr.Error)
+	}
+
+	return smlcr.Data, nil
+}
+
+func (ar *AuthRepository) LoginModule(body *ServiceModuleLoginRequestBody) (*Tokens, error) {
+	url := fmt.Sprintf("%s/module/login", ar.service_url)
 
 	var smlr ServiceModuleLoginResponse
 	res, err := sharedutils.NewPostRequest(ar.http_client, ar.microservice_name, url, body)
@@ -89,7 +108,7 @@ func (ar *AuthRepository) LoginModule(serial_number string, private_key string) 
 	return smlr.Data, nil
 }
 
-func (ar *AuthRepository) RegisterModule(serial_number string) (private_key *string, err error) {
+func (ar *AuthRepository) RegisterModule(serial_number string) (*ServiceModuleRegisterResponseData, error) {
 	url := fmt.Sprintf("%s/module/register", ar.service_url)
 
 	body := &ServiceModuleRegisterRequestBody{
@@ -110,5 +129,5 @@ func (ar *AuthRepository) RegisterModule(serial_number string) (private_key *str
 		return nil, fmt.Errorf("error while parsing module register response: %s", *smrr.Error)
 	}
 
-	return &smrr.Data.PrivateKey, nil
+	return smrr.Data, nil
 }

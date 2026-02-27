@@ -1,5 +1,7 @@
 package authrepository
 
+import "time"
+
 // Refresh tokens
 type ServiceRefreshTokensRequestBody struct {
 	RefreshToken string `json:"refresh_token"`
@@ -41,10 +43,27 @@ type ServiceUserRegisterResponse struct {
 	Data   *string `json:"data"` // always `nil`
 }
 
+// Module login challenge
+type ServiceModuleLoginChallengeRequestBody struct {
+	SerialNumber string `json:"serial_number"`
+}
+
+type ServiceModuleLoginChallengeResponseData struct {
+	Challenge string    `json:"challenge"`
+	ExpiresAt time.Time `json:"expires_at"`
+}
+
+type ServiceModuleLoginChallengeResponse struct {
+	Status string                                   `json:"status"`
+	Error  *string                                  `json:"error"`
+	Data   *ServiceModuleLoginChallengeResponseData `json:"data"`
+}
+
 // Module login
 type ServiceModuleLoginRequestBody struct {
-	SerialNumber string `json:"serial_number"`
-	PrivateKey   string `json:"private_key"`
+	CertificateBase64 string `json:"certificate_base64"`
+	Challenge         string `json:"challenge"`
+	SignatureBase64   string `json:"signature_base64"`
 }
 
 type ServiceModuleLoginResponse struct {
@@ -59,7 +78,8 @@ type ServiceModuleRegisterRequestBody struct {
 }
 
 type ServiceModuleRegisterResponseData struct {
-	PrivateKey string `json:"private_key"`
+	CertificateBase64 string `json:"certificate_base64"`
+	PrivateKeyBase64  string `json:"private_key_base64"`
 }
 
 type ServiceModuleRegisterResponse struct {
