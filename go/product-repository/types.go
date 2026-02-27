@@ -3,8 +3,6 @@ package productrepository
 import (
 	"net/http"
 	"time"
-
-	filerepository "github.com/autobar-dev/shared-libraries/go/file-repository"
 )
 
 type ProductRepository struct {
@@ -27,14 +25,15 @@ type ProductBadge struct {
 }
 
 type Product struct {
-	Id           string              `json:"id"`
-	Names        map[string]string   `json:"names"`
-	Descriptions map[string]string   `json:"descriptions"`
-	Cover        filerepository.File `json:"cover"`
-	Enabled      bool                `json:"enabled"`
-	Badges       []ProductBadge      `json:"badges"`
-	CreatedAt    time.Time           `json:"created_at"`
-	UpdatedAt    time.Time           `json:"updated_at"`
+	Id           int               `json:"id"`
+	Slug         string            `json:"slug"`
+	ImageFileId  int               `json:"image_file_id"`
+	Names        map[string]string `json:"names"`
+	Descriptions map[string]string `json:"descriptions"`
+	Enabled      bool              `json:"enabled"`
+	Badges       []ProductBadge    `json:"badges"`
+	CreatedAt    time.Time         `json:"created_at"`
+	UpdatedAt    time.Time         `json:"updated_at"`
 }
 
 type ProductResponseType string

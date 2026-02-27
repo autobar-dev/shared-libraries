@@ -19,9 +19,9 @@ func NewProductRepository(service_url string, microservice_name string) *Product
 }
 
 func (pr *ProductRepository) GetProductById(
-	id string,
+	id int,
 ) (*Product, error) {
-	url := fmt.Sprintf("%s/?id=%s", pr.service_url, id)
+	url := fmt.Sprintf("%s/?id=%d", pr.service_url, id)
 
 	res, err := sharedutils.NewGetRequest(pr.http_client, pr.microservice_name, url)
 	if err != nil {
