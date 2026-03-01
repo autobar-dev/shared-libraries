@@ -45,12 +45,11 @@ type ServiceUserRegisterResponse struct {
 
 // Module login challenge
 type ServiceModuleLoginChallengeRequestBody struct {
-	SerialNumber string `json:"serial_number"`
 }
 
 type ServiceModuleLoginChallengeResponseData struct {
-	Challenge string    `json:"challenge"`
-	ExpiresAt time.Time `json:"expires_at"`
+	ChallengeBase64 string    `json:"challenge_base64"`
+	ExpiresAt       time.Time `json:"expires_at"`
 }
 
 type ServiceModuleLoginChallengeResponse struct {
@@ -61,9 +60,9 @@ type ServiceModuleLoginChallengeResponse struct {
 
 // Module login
 type ServiceModuleLoginRequestBody struct {
-	CertificateBase64 string `json:"certificate_base64"`
-	Challenge         string `json:"challenge"`
-	SignatureBase64   string `json:"signature_base64"`
+	CertificatePEM  string `json:"certificate_pem"`
+	ChallengeBase64 string `json:"challenge_base64"`
+	SignatureBase64 string `json:"signature_base64"`
 }
 
 type ServiceModuleLoginResponse struct {

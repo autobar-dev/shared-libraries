@@ -64,12 +64,10 @@ func (ar *AuthRepository) RegisterUser(surrb *ServiceUserRegisterRequestBody) er
 	return nil
 }
 
-func (ar *AuthRepository) LoginModuleChallenge(serial_number string) (*ServiceModuleLoginChallengeResponseData, error) {
+func (ar *AuthRepository) LoginModuleChallenge() (*ServiceModuleLoginChallengeResponseData, error) {
 	url := fmt.Sprintf("%s/module/login/challenge", ar.service_url)
 
-	body := &ServiceModuleLoginChallengeRequestBody{
-		SerialNumber: serial_number,
-	}
+	body := &ServiceModuleLoginChallengeRequestBody{}
 
 	var smlcr ServiceModuleLoginChallengeResponse
 	res, err := sharedutils.NewPostRequest(ar.http_client, ar.microservice_name, url, body)
