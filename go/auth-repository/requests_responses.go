@@ -77,8 +77,8 @@ type ServiceModuleRegisterRequestBody struct {
 }
 
 type ServiceModuleRegisterResponseData struct {
-	CertificateBase64 string `json:"certificate_base64"`
-	PrivateKeyBase64  string `json:"private_key_base64"`
+	CertificatePEM string `json:"certificate_pem"`
+	PrivateKeyPEM  string `json:"private_key_pem"`
 }
 
 type ServiceModuleRegisterResponse struct {
