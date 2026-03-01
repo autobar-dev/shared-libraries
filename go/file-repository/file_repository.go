@@ -19,9 +19,9 @@ func NewFileRepository(service_url string, microservice_name string) *FileReposi
 }
 
 func (fr *FileRepository) GetFile(
-	id string,
+	id int,
 ) (*File, error) {
-	url := fmt.Sprintf("%s/?id=%s", fr.service_url, id)
+	url := fmt.Sprintf("%s/?id=%d", fr.service_url, id)
 
 	res, err := sharedutils.NewGetRequest(fr.http_client, fr.microservice_name, url)
 	if err != nil {
@@ -41,7 +41,7 @@ func (fr *FileRepository) GetFile(
 }
 
 func (fr *FileRepository) DeleteFile(
-	id string,
+	id int,
 ) error {
 	url := fmt.Sprintf("%s/delete", fr.service_url)
 

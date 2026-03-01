@@ -9,7 +9,7 @@ type ServiceGetFileResponse struct {
 
 // Delete file
 type ServiceDeleteFileRequestBody struct {
-	Id string `json:"id"`
+	Id int `json:"id"`
 }
 
 type ServiceDeleteFileResponse struct {
