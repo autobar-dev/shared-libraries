@@ -12,8 +12,13 @@ type FileRepository struct {
 }
 
 type File struct {
-	Id        string    `json:"id"`
-	Extension string    `json:"extension"`
-	Url       string    `json:"url"`
-	CreatedAt time.Time `json:"created_at"`
+	Id         int       `json:"id"`
+	S3ObjectId string    `json:"s3_object_id"`
+	Name       string    `json:"name"`
+	Checksum   string    `json:"checksum"`
+	Size       int64     `json:"size"`
+	CreatedAt  time.Time `json:"created_at"`
+
+	Extension string `json:"extension"`
+	Url       string `json:"url"`
 }
