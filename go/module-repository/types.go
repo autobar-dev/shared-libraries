@@ -16,8 +16,8 @@ type ModuleRepository struct {
 type Module struct {
 	Id              int32                       `json:"id"`
 	SerialNumber    string                      `json:"serial_number"`
-	StationId       *string                     `json:"station_id"`
-	ProductId       *string                     `json:"product_id"`
+	StationId       *int                        `json:"station_id"`
+	ProductId       *int                        `json:"product_id"`
 	Enabled         bool                        `json:"enabled"`
 	Prices          map[string]int              `json:"prices"`
 	DisplayCurrency currencyrepository.Currency `json:"display_currency"`
