@@ -16,3 +16,14 @@ type ServiceDeleteFileResponse struct {
 	Status string  `json:"status"`
 	Error  *string `json:"error"`
 }
+
+// Upload file
+type ServiceUploadFileResponseData struct {
+	Id int `json:"id"`
+}
+
+type ServiceUploadFileResponse struct {
+	Status string                         `json:"status"`
+	Error  *string                        `json:"error"`
+	Data   *ServiceUploadFileResponseData `json:"data"`
+}
